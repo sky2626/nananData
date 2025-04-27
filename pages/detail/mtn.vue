@@ -34,15 +34,15 @@
                 </div>
               </div>
               <div>
-                <h2 class="mt-4 text-lg font-semibold">Selected Price:</h2>
+                <h2 class="mt-4 text-lg font-semibold text-black">Selected Price:</h2>
                 <p class="text-gray-800 mt-1">
                   {{ selectedPrice ? `GH₵${selectedPrice}` : 'Select a size to see the price' }}
                 </p>
               </div>
               <div class="mt-4">
-                <label for="phone" aria-required="true">Recipient Number</label>
+                <label for="phone" aria-required="true" class="text-black">Recipient Number</label>
                 <input v-model="phoneNumber" type="tel"
-                  class="border border-black rounded-xl p-2 w-full focus:ring-yellow-500 focus:border-yellow-500"
+                  class="border border-black rounded-xl p-2 w-full text-black focus:ring-yellow-500 focus:border-yellow-500"
                   id="phone" name="phone" placeholder="Recipient Number" required>
               </div>
 
@@ -95,7 +95,7 @@ import { ref, onMounted } from 'vue';
 import { createClient } from '@supabase/supabase-js'
 
 const sizes = ref({
-  1: 5.5, 2: 11, 3: 17, 4: 29, 5: 26, 6: 30, 8: 39, 10: 46, 15: 69, 20: 90, 25: 109, 30: 129, 40: 168, 50: 205, 100: 405
+  1: 4.7, 2: 9.5, 3: 15, 4: 19, 5: 23.5, 6: 27, 8: 33, 10: 44, 15: 63.5, 20: 85, 25: 104, 30: 123, 40: 165, 50: 199, 100: 392
 });
 
 const selectedPrice = ref(null);
@@ -181,7 +181,7 @@ const payWithPaystack = () => {
     amount: selectedPrice.value * 100, // Paystack expects amount in kobo
     currency: "GHS",
     callback: function (response) {
-      alert("✅ Payment Successful! Ref: " + response.reference);
+      //alert("✅ Payment Successful! Ref: " + response.reference);
       savePayment(response); // Call async function separately
     },
     onClose: function () {

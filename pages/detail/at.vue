@@ -2,10 +2,10 @@
   <div class="pt-18">
     <div class="relative">
       <div
-        class="h-[400px] mt-34 max-w-7xl mx-2 md:mx-auto rounded-[65px] absolute top-[-200px] inset-0 bg-[url('/mtn.png')] bg-cover">
+        class="h-[400px] mt-34 max-w-7xl mx-2 md:mx-auto rounded-[65px] absolute top-[-200px] inset-0 bg-[url('/at.png')] bg-cover">
         <div class="flex justify-between items-center p-8">
           <IconsMtn class="text-yellow-800 text-2xl" />
-          <h2 class="text-2xl text-black font-semibold">MTN Data</h2>
+          <h2 class="text-2xl text-black font-semibold">AirtelTigo ishare</h2>
           <NuxtLink to="/" class="text-black font-semibold px-6 hover:text-gray-800">
             New Product
           </NuxtLink>
@@ -15,12 +15,12 @@
       <div class="max-w-5xl mx-2 md:mx-auto mt-34 p-6 shadow-lg rounded-[60px] bg-gray-300/10 backdrop-blur-lg">
         <div class="w-full flex flex-col md:flex-row justify-center gap-4 py-8">
           <div class="w-full">
-            <h1 class="text-2xl font-bold text-gray-800">MTN DATA</h1>
-            <p class="text-gray-600 mt-2">MTN non-expiry data available</p>
+            <h1 class="text-2xl font-bold text-gray-800">AirtelTigo ishare</h1>
+            <p class=" mt-2 text-white">AirtelTigo ishare non-expiry data available</p>
           </div>
 
-          <div class="border-y-3 border-yellow-500 rounded-full w-full h-full p-4">
-            <img src="/mtnlogo.png" alt="mtn" class="w-full object-cover rounded-full border border-gray-300/10" />
+          <div class="border-y-3 border-[#E40001] rounded-full w-full h-full p-4">
+            <img src="/atlogo.png" alt="mtn" class="w-full object-cover rounded-full border border-gray-300/10" />
           </div>
 
           <ClientOnly>
@@ -29,30 +29,30 @@
               <div class="gap-2 grid grid-cols-3 md:grid-cols-4">
                 <div v-for="(price, size) in sizes" :key="size" class="flex flex-col">
                   <div @click="togglePrice(size, price)"
-                    class="bg-gray-300/10 backdrop-blur-lg shadow-sm text-black font-semibold px-2 py-2 rounded-xl hover:bg-yellow-500">
+                    class="bg-gray-300/10 backdrop-blur-lg shadow-sm text-black font-semibold px-2 py-2 rounded-xl hover:bg-[#E40001]">
                     {{ size }} GB
                   </div>
                 </div>
               </div>
 
               <div>
-                <h2 class="mt-4 text-lg font-semibold">Selected Price:</h2>
+                <h2 class="mt-4 text-lg font-semibold text-black">Selected Price:</h2>
                 <p class="text-gray-800 mt-1">
                   {{ selectedPrice ? `GH₵${selectedPrice}` : 'Select a size to see the price' }}
                 </p>
               </div>
 
               <div class="mt-4">
-                <label for="phone" aria-required="true">Recipient Number</label>
+                <label for="phone" aria-required="true" class="text-black">Recipient Number</label>
                 <input v-model="phoneNumber" type="tel"
-                  class="border border-black rounded-xl p-2 w-full focus:ring-yellow-500 focus:border-yellow-500"
+                  class="border border-black rounded-xl p-2 w-full focus:ring-[#E40001] focus:border-[#E40001]"
                   id="phone" name="phone" placeholder="Recipient Number" required>
               </div>
 
               <!-- Paystack Payment Button -->
               <div class="mt-4">
                 <button @click="payWithPaystack"
-                  class="bg-black text-yellow-500 px-6 py-2 rounded-xl text-lg hover:bg-gray-800 cursor-pointer">
+                  class="bg-black text-[#E40001] px-6 py-2 rounded-xl text-lg hover:bg-gray-800 cursor-pointer">
                   Pay Now
                 </button>
               </div>
@@ -98,12 +98,13 @@
 import { ref, onMounted } from 'vue';
 
 const sizes = ref({
-  1: 5.5, 2: 11, 3: 17, 4: 29, 5: 26, 6: 30, 8: 39, 10: 46, 15: 69,
-  20: 90, 25: 109, 30: 129, 40: 168, 50: 205, 100: 405
+  1: 4.9, 2: 8.9, 3: 12.5, 4: 15.9, 5: 20, 6: 24.5, 7: 27.5, 8: 32, 10: 39.5, 15: 69
 });
-
 const selectedPrice = ref(null);
 const phoneNumber = ref("");
+const config = useRuntimeConfig();
+
+const publicKey = config.public.paystackPublicKey; // Use the public key from Nuxt config
 
 const togglePrice = (size, price) => {
   selectedPrice.value = selectedPrice.value === price ? null : price;
@@ -117,7 +118,50 @@ const loadPaystack = () => {
     script.src = "https://js.paystack.co/v1/inline.js";
     script.async = true;
     script.onload = () => console.log("✅ Paystack script loaded successfully.");
+    script.onerror = () => console.error("❌ Failed to load Paystack script.");
     document.body.appendChild(script);
+  }
+};
+
+// Separate async function to save payment to Supabase
+// Separate async function to save payment to Supabase
+const savePayment = async (response) => {
+  try {
+    const supabase = createClient('https://vnqfxfenckuajfrmhwkl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZucWZ4ZmVuY2t1YWpmcm1od2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3MDMzMzgsImV4cCI6MjA2MTI3OTMzOH0.xAWgOU-ANOrMMqqR1pfL9qUfMiRS0ysjogHHg-d3Z1g');
+
+    // Ensure that supabase client is initialized properly
+    if (!supabase) {
+      throw new Error('Supabase client not found!');
+    }
+
+    // Check size value before inserting
+    const sizeValue = Number(Object.keys(sizes.value).find((key) => sizes.value[key] === selectedPrice.value));
+    if (isNaN(sizeValue)) {
+      throw new Error('Invalid size value. Cannot find a valid size.');
+    }
+
+    // Insert the payment record into the Supabase table
+    const { data, error } = await supabase
+      .from('payment')
+      .insert([
+        {
+          phone: phoneNumber.value,
+          reference: response.reference,
+          bundletype: "at big data",
+          size: sizeValue,
+          amount: selectedPrice.value,
+          status: response.status,
+        }
+      ]);
+
+    // Log error details if any
+    if (error) {
+      console.error("❌ Error inserting payment record into Supabase", error.message || error.details || error);
+    } else {
+      console.log("✅ Payment record added to Supabase:", data);
+    }
+  } catch (err) {
+    console.error("❌ Unexpected error while saving payment:", err);
   }
 };
 
@@ -133,39 +177,13 @@ const payWithPaystack = () => {
     return;
   }
 
-  const publicKey = "pk_test_eb3bc9ba87ba3fe7f19a2fe09d4a7132ea9d37b2"; // Your test public key
-
   const handler = window.PaystackPop.setup({
     key: publicKey,
-    email: `${phoneNumber.value}@example.com`, // phone as email
-    amount: selectedPrice.value * 100, // Paystack expects kobo
+    email: `${phoneNumber.value}@example.com`, // Use phone number as email
+    amount: selectedPrice.value * 100, // Paystack expects amount in kobo
     currency: "GHS",
-    callback: async function (response) {
-      alert("✅ Payment Successful! Ref: " + response.reference);
-      console.log(response);
-
-      const { $supabase } = useNuxtApp(); // access supabase client
-
-      const { data, error } = await $supabase
-        .from('payments') // your Supabase table
-        .insert([
-          {
-            phone: phoneNumber.value,
-            reference: response.reference,
-            bundletype: "mtn",
-            size: Number(Object.keys(sizes.value).find((key) => sizes.value[key] === selectedPrice.value)),
-            amount: selectedPrice.value,
-            status: response.status,
-          }
-        ]);
-
-      if (error) {
-        console.error("❌ Failed to save to Supabase:", error.message);
-        alert("❌ Error saving payment info.");
-      } else {
-        console.log("✅ Payment info saved:", data);
-        alert("✅ Payment details saved successfully.");
-      }
+    callback: function (response) {
+      savePayment(response); // Call async function separately
     },
     onClose: function () {
       alert("❌ Payment window closed.");
@@ -175,8 +193,9 @@ const payWithPaystack = () => {
   handler.openIframe();
 };
 
-// Load Paystack when page loads
+// Load Paystack script on page mount
 onMounted(() => {
   loadPaystack();
 });
+
 </script>

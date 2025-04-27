@@ -34,16 +34,16 @@
               </div>
             </div>
             <div>
-              <h2 class="mt-4 text-lg font-semibold">Selected Price:</h2>
+              <h2 class="mt-4 text-lg font-semibold text-black">Selected Price:</h2>
               <p class="text-gray-800 mt-1">
                 {{ selectedPrice ? `GH₵${selectedPrice}` : 'Select a size to see the price' }}
               </p>
             </div>
             <div class="mt-4">
-              <label for="phone" aria-required="true">Recipient Number</label>
+              <label for="phone" aria-required="true" class="text-black">Recipient Number</label>
               <input v-model="phoneNumber" type="tel"
-                class="border border-black rounded-xl p-2 w-full focus:ring-[#E40001] focus:border-[#E40001]" id="phone"
-                name="phone" placeholder="Recipient Number" required>
+                class="border border-black rounded-xl p-2 w-full text-black focus:ring-[#E40001] focus:border-[#E40001]"
+                id="phone" name="phone" placeholder="Recipient Number" required>
             </div>
 
 
@@ -95,15 +95,17 @@ import { ref, onMounted } from 'vue';
 import { createClient } from '@supabase/supabase-js'
 
 const sizes = ref({
-  1: 9, 2: 12.5, 3: 17.5, 4: 19.5, 5: 25.5, 10: 42, 15: 61, 20: 81, 25: 99, 30: 120, 40: 156, 50: 185, 100: 370
+  5: 22, 10: 40, 15: 61, 20: 81, 25: 99, 30: 120, 40: 155, 50: 183, 100: 369
 });
-
 const selectedPrice = ref(null);
 const phoneNumber = ref("");
-const publicKey = "pk_test_eb3bc9ba87ba3fe7f19a2fe09d4a7132ea9d37b2"; // Replace with your Paystack public key
+const config = useRuntimeConfig();
+
+const publicKey = config.public.paystackPublicKey; // Use the public key from Nuxt config
 
 const togglePrice = (size, price) => {
   selectedPrice.value = selectedPrice.value === price ? null : price;
+  console.log(`Selected size: ${size} GB, Price: GH₵${price}`);
 };
 
 // Function to load Paystack script
@@ -113,7 +115,50 @@ const loadPaystack = () => {
     script.src = "https://js.paystack.co/v1/inline.js";
     script.async = true;
     script.onload = () => console.log("✅ Paystack script loaded successfully.");
+    script.onerror = () => console.error("❌ Failed to load Paystack script.");
     document.body.appendChild(script);
+  }
+};
+
+// Separate async function to save payment to Supabase
+// Separate async function to save payment to Supabase
+const savePayment = async (response) => {
+  try {
+    const supabase = createClient('https://vnqfxfenckuajfrmhwkl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZucWZ4ZmVuY2t1YWpmcm1od2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3MDMzMzgsImV4cCI6MjA2MTI3OTMzOH0.xAWgOU-ANOrMMqqR1pfL9qUfMiRS0ysjogHHg-d3Z1g');
+
+    // Ensure that supabase client is initialized properly
+    if (!supabase) {
+      throw new Error('Supabase client not found!');
+    }
+
+    // Check size value before inserting
+    const sizeValue = Number(Object.keys(sizes.value).find((key) => sizes.value[key] === selectedPrice.value));
+    if (isNaN(sizeValue)) {
+      throw new Error('Invalid size value. Cannot find a valid size.');
+    }
+
+    // Insert the payment record into the Supabase table
+    const { data, error } = await supabase
+      .from('payment')
+      .insert([
+        {
+          phone: phoneNumber.value,
+          reference: response.reference,
+          bundletype: "telecel",
+          size: sizeValue,
+          amount: selectedPrice.value,
+          status: response.status,
+        }
+      ]);
+
+    // Log error details if any
+    if (error) {
+      console.error("❌ Error inserting payment record into Supabase", error.message || error.details || error);
+    } else {
+      console.log("✅ Payment record added to Supabase:", data);
+    }
+  } catch (err) {
+    console.error("❌ Unexpected error while saving payment:", err);
   }
 };
 
@@ -131,35 +176,12 @@ const payWithPaystack = () => {
 
   const handler = window.PaystackPop.setup({
     key: publicKey,
-    email: `${phoneNumber.value}@example.com`, // Using phone number as email
+    email: `${phoneNumber.value}@example.com`, // Use phone number as email
     amount: selectedPrice.value * 100, // Paystack expects amount in kobo
     currency: "GHS",
-    callback: async function (response) {
-      alert("✅ Payment Successful! Ref: " + response.reference);
-      console.log(response);
-      // Access the Supabase client via inject
-      const supabase = createClient('https://vnqfxfenckuajfrmhwkl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZucWZ4ZmVuY2t1YWpmcm1od2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3MDMzMzgsImV4cCI6MjA2MTI3OTMzOH0.xAWgOU-ANOrMMqqR1pfL9qUfMiRS0ysjogHHg-d3Z1g')
-
-      if (!supabase) {
-        throw new Error('Supabase client not found!')
-      }
-      // 2. Also insert into Supabase
-      const { error } = await supabase.from('payments').insert([
-        {
-          phone: phoneNumber.value,
-          reference: response.reference,
-          bundletype: "telecel",
-          size: Number(Object.keys(sizes.value).find((key) => sizes.value[key] === selectedPrice.value)),
-          amount: selectedPrice.value,
-          status: response.status,
-        }
-      ]);
-
-      if (error) {
-        console.error("❌ Error saving to Supabase:", error.message);
-      } else {
-        console.log("✅ Saved to Supabase successfully!");
-      }
+    callback: function (response) {
+      //alert("✅ Payment Successful! Ref: " + response.reference);
+      savePayment(response); // Call async function separately
     },
     onClose: function () {
       alert("❌ Payment window closed.");
@@ -169,8 +191,9 @@ const payWithPaystack = () => {
   handler.openIframe();
 };
 
-// Ensure Paystack script is loaded on component mount
+// Load Paystack script on page mount
 onMounted(() => {
   loadPaystack();
 });
+
 </script>

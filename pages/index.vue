@@ -32,29 +32,29 @@ const products = ref([
     id: 1,
     name: "MTN",
     link: "/detail/mtn",
-    image: "https://assets.nflxext.com/ffe/siteui/vlv3/04ef06cc-5f81-4a8e-8db0-6430ba4af286/web/NG-en-20250224-TRIFECTA-perspective_5680cc3f-a4c0-41bc-a57f-3ef3482ea3ef_large.jpg",
-    price: "GH₵10 - GH₵400"
+    image: "/mtnnew.png",
+    price: "GH₵4.70 - GH₵392"
   },
   {
     id: 2,
     name: "Telecel",
     link: "/detail/telecel",
-    image: "https://assets.nflxext.com/ffe/siteui/vlv3/04ef06cc-5f81-4a8e-8db0-6430ba4af286/web/NG-en-20250224-TRIFECTA-perspective_5680cc3f-a4c0-41bc-a57f-3ef3482ea3ef_large.jpg",
-    price: "GH₵10 - GH₵400",
+    image: "/tel.jpeg",
+    price: "GH₵22 - GH₵369",
   },
   {
     id: 3,
     name: "AirtelTigo ishare",
     link: "/detail/at",
-    image: "https://assets.nflxext.com/ffe/siteui/vlv3/04ef06cc-5f81-4a8e-8db0-6430ba4af286/web/NG-en-20250224-TRIFECTA-perspective_5680cc3f-a4c0-41bc-a57f-3ef3482ea3ef_large.jpg",
-    price: "GH₵10 - GH₵400",
+    image: "/atlogo.png",
+    price: "GH₵4.9 - GH₵69",
   },
   {
     id: 4,
     name: "airteltigo Big data",
     link: "/detail/airteltigo",
-    image: "https://example.com/airteltigo.jpg",
-    price: "GH₵10 - GH₵400",
+    image: "/atlogo.png",
+    price: "GH₵69 - GH₵358",
   }
 ]);
 </script>
@@ -91,27 +91,23 @@ const products = ref([
     <UContainer>
       <h2 class="text-2xl font-bold text-black">Popular Product</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6">
-        <a v-for="product in products" :key="product.id" :href="product.link"
-          class="w-full p-4 bg-white shadow-lg rounded-2xl flex justify-center transition-transform hover:scale-105 bg-cover bg-center">
+        <nuxt-link v-for="product in products" :key="product.id" :href="product.link"
+          class="bg-white shadow-lg p-4 rounded-2xl transform hover:scale-105 transition-all duration-300 ease-in-out hover:cursor">
           <div>
-            <!-- Comment
-            <div class="flex justify-between items-center mb-2">
-              <IconsCmenu class="text-2xl" />
-              <IconsCart class="text-2xl" />
+            <div>
+              <img :src="product.image" alt="product.name"
+                class="w-full h-48 object-cover rounded-xl border border-gray-200">
             </div>
-            -->
-            <img :src="product.image" alt="product.name"
-              class="w-full h-48 object-cover rounded-xl border border-gray-200">
             <h1 class="text-lg font-semibold text-gray-900 mt-4 ">{{ product.name }}</h1>
             <h1 class="text-xl font-bold text-yellow-600 mt-2 ">{{ product.price }}</h1>
             <div class="mt-4">
-              <NuxtLink :to="product.link"
+              <button :to="product.link"
                 class="border border-yellow-500 text-yellow-500 px-4 py-2 rounded-lg text-sm hover:bg-yellow-500 hover:text-white transition">
-                View Details
-              </NuxtLink>
+                Buy Now
+              </button>
             </div>
           </div>
-        </a>
+        </nuxt-link>
       </div>
     </UContainer>
   </div>
