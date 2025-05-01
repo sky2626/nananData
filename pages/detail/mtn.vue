@@ -125,7 +125,7 @@ const loadPaystack = () => {
 // Separate async function to save payment to Supabase
 const savePayment = async (response) => {
   try {
-    const supabase = createClient('https://vnqfxfenckuajfrmhwkl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZucWZ4ZmVuY2t1YWpmcm1od2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3MDMzMzgsImV4cCI6MjA2MTI3OTMzOH0.xAWgOU-ANOrMMqqR1pfL9qUfMiRS0ysjogHHg-d3Z1g');
+    const supabase = createClient('https://aycuhibappzsgryiqztm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5Y3VoaWJhcHB6c2dyeWlxenRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwNTc5MzksImV4cCI6MjA2MTYzMzkzOX0.UzxTQwAHF3MLzlisp0cOK9eXRciIklohlQdkuNb9pPU');
 
     // Ensure that supabase client is initialized properly
     if (!supabase) {
