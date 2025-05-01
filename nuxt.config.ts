@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
-      paystackPublicKey: 'pk_test_eb3bc9ba87ba3fe7f19a2fe09d4a7132ea9d37b2',
+      paystackPublicKey: 'sk_live_881c2291e11eb4d4789dde5dce54ed2e8ea9f900',
     }
   },
   css: ['~/assets/css/main.css'],
