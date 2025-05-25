@@ -95,7 +95,7 @@ import { ref, onMounted } from 'vue';
 import { createClient } from '@supabase/supabase-js'
 
 const sizes = ref({
-  5: 22, 10: 40, 15: 61, 20: 81, 25: 99, 30: 120, 40: 155, 50: 183, 100: 369
+  5: 25.5, 10: 46, 15: 66.5, 20: 87.5, 25: 112, 30: 131, 50: 215, 100: 389
 });
 const selectedPrice = ref(null);
 const phoneNumber = ref("");
