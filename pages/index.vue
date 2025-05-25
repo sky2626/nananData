@@ -37,20 +37,28 @@ const products = ref([
   },
   {
     id: 2,
+    name: "MTN",
+    link: "/detail/mtninstant",
+    image: "/mtnnew.png",
+    price: "GH₵25 - GH₵60",
+    detail: "Weekly data delivered instantly."
+  },
+  {
+    id: 3,
     name: "Telecel",
     link: "/detail/telecel",
     image: "/tel.jpeg",
     price: "GH₵22 - GH₵369",
   },
   {
-    id: 3,
+    id: 4,
     name: "AirtelTigo ishare",
     link: "/detail/at",
     image: "/atlogo.png",
     price: "GH₵4.9 - GH₵69",
   },
   {
-    id: 4,
+    id: 5,
     name: "airteltigo Big data",
     link: "/detail/airteltigo",
     image: "/atlogo.png",
