@@ -57,6 +57,59 @@ const products = ref([
     price: "GH₵69 - GH₵358",
   }
 ]);
+
+const streams = ref([
+  {
+    id: 1,
+    name: "NETFLIX",
+    link: "/detail/netflix",
+    image: "/netflix.jpg",
+    price: "GH₵30",
+    detail: "One month subscription"
+  },
+  {
+    id: 2,
+    name: "Apple Music",
+    link: "/detail/applemusic",
+    image: "/applemusic.jpg",
+    price: "GH₵25 - GH₵40",
+    detail: "One month subscription and three months subscription."
+  },
+  {
+    id: 3,
+    name: "Apple TV",
+    link: "/detail/appletv",
+    image: "/appletv.jpg",
+    price: "GH₵25",
+    detail: "One month subscription"
+  },
+  {
+    id: 4,
+    name: "Apple Arcade/Games",
+    link: "/detail/applegames",
+    image: "/applegames.jpg",
+    price: "GH₵20",
+    detail: "One month subscription",
+  },
+  {
+    id: 5,
+    name: "iCloud Storage",
+    link: "/detail/icloud",
+    image: "/icloud.jpg",
+    price: "GH₵25 - GH₵40",
+    detail: "One month subscription and three months subscription."
+  },
+  {
+    id: 6,
+    name: "Amazon Prime",
+    link: "/detail/amazon",
+    image: "/amazon.jpg",
+    price: "GH₵160",
+    detail: "Six month subscription"
+  },
+
+]);
+
 </script>
 
 <template>
@@ -103,6 +156,27 @@ const products = ref([
             <h1 class="text-xl font-bold text-yellow-600 mt-2 ">{{ product.price }}</h1>
             <div class="mt-4">
               <button :to="product.link"
+                class="border border-yellow-500 text-yellow-500 px-4 py-2 rounded-lg text-sm hover:bg-yellow-500 hover:text-white transition">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </nuxt-link>
+      </div>
+
+      <h2 class="text-2xl font-bold text-black">Streaming Product</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6">
+        <nuxt-link v-for="stream in streams" :key="stream.id" :href="stream.link"
+          class="bg-white shadow-lg p-4 rounded-2xl transform hover:scale-105 transition-all duration-300 ease-in-out hover:cursor">
+          <div>
+            <div>
+              <img :src="stream.image" alt="stream.name"
+                class="w-full h-48 object-cover rounded-xl border border-gray-200">
+            </div>
+            <h1 class="text-lg font-semibold text-gray-900 mt-4 ">{{ stream.name }}</h1>
+            <h1 class="text-xl font-bold text-yellow-600 mt-2 ">{{ stream.price }}</h1>
+            <div class="mt-4">
+              <button :to="stream.link"
                 class="border border-yellow-500 text-yellow-500 px-4 py-2 rounded-lg text-sm hover:bg-yellow-500 hover:text-white transition">
                 Buy Now
               </button>
